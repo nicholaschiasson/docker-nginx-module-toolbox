@@ -1,4 +1,4 @@
-name: Docker
+name: DockerHub
 
 on:
   push:
@@ -19,8 +19,8 @@ jobs:
       - name: build-push
         uses: docker/build-push-action@v1
         with:
-          username: ${{ DOCKER_USERNAME }}
-          password: ${{ DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
           registry: https://registry.hub.docker.com
-          repository: ${{ DOCKER_USERNAME }}/$IMAGE_NAME
+          repository: ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME
           tags: latest
