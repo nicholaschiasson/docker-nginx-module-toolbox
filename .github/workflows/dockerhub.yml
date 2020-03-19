@@ -1,0 +1,26 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+  pull_request:
+
+env:
+  IMAGE_NAME: nginx-toolbox
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build-push
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ DOCKER_USERNAME }}
+          password: ${{ DOCKER_PASSWORD }}
+          registry: https://registry.hub.docker.com
+          repository: ${{ DOCKER_USERNAME }}/$IMAGE_NAME
+          tags: latest
