@@ -19,5 +19,3 @@ RUN yum install -y \
 RUN cpanm --force Spiffy
 RUN cpanm Test::Base
 RUN cpanm Test::Nginx
-
-RUN unbound -vvv
