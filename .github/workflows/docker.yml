@@ -10,7 +10,10 @@ on:
   pull_request:
 
 env:
+  IMAGE_BASE_NAME: amazonlinux
+  IMAGE_BASE_VERSION: 2
   IMAGE_NAME: nginx-module-toolbox
+  NGINX_VERSION: 1.18.0
 
 jobs:
   test:
@@ -25,7 +28,7 @@ jobs:
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . --file Dockerfile
+            docker build . --file Dockerfile --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
           fi
 
   push-github:
@@ -38,24 +41,24 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag image
+        run: docker build . --file Dockerfile --tag image --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
       - name: Push image
         run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}-${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          echo IMAGE_ID=${IMAGE_ID}
+          echo VERSION=${VERSION}
 
-          docker tag image $IMAGE_ID:$VERSION
-          docker tag image $IMAGE_ID:latest
-          docker push $IMAGE_ID
+          docker tag image ${IMAGE_ID}:${VERSION}
+          docker tag image ${IMAGE_ID}:latest
+          docker push ${IMAGE_ID}
 
   push-dockerhub:
     needs: test
@@ -67,21 +70,21 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag image
+        run: docker build . --file Dockerfile --tag image --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
 
       - name: Log into registry
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login registry.hub.docker.com -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Push image Docker Hub
         run: |
-          IMAGE_ID=registry.hub.docker.com/${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME
+          IMAGE_ID=registry.hub.docker.com/${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}-${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          echo IMAGE_ID=${IMAGE_ID}
+          echo VERSION=${VERSION}
 
-          docker tag image $IMAGE_ID:$VERSION
-          docker tag image $IMAGE_ID:latest
-          docker push $IMAGE_ID
+          docker tag image ${IMAGE_ID}:${VERSION}
+          docker tag image ${IMAGE_ID}:latest
+          docker push ${IMAGE_ID}
