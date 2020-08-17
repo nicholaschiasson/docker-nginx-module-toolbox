@@ -27,7 +27,7 @@ RUN cpanm Test::Base
 RUN cpanm Test::Nginx
 
 RUN unbound-control-setup
-COPY unbound.conf /tmp/unbound.conf
-COPY unbound_local_zone_ngx_upstream_jdomain.conf /tmp/unbound_local_zone_ngx_upstream_jdomain.conf
+COPY unbound.conf /etc/unbound.conf
+COPY unbound_local_zone.conf /etc/unbound_local_zone.conf
 
 WORKDIR /
