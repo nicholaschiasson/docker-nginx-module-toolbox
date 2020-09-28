@@ -18,6 +18,7 @@ RUN yum install -y \
 	gcc \
 	gcc-c++ \
 	gzip \
+	jq \
 	openssl-devel \
 	patch \
 	pcre-devel \
