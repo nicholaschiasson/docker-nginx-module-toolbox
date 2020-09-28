@@ -19,6 +19,7 @@ RUN yum install -y \
 	gcc-c++ \
 	gzip \
 	openssl-devel \
+	patch \
 	pcre-devel \
 	perl \
 	perl-App-cpanminus \
