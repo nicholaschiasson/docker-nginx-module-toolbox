@@ -11,78 +11,74 @@ env:
   IMAGE_BASE_NAME: amazonlinux
   IMAGE_BASE_VERSION: 2
   IMAGE_NAME: nginx-module-toolbox
-  NGINX_VERSION: 1.18.0
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        nginx:
+          - 1.16.1
+          - 1.18.0
     steps:
       - uses: actions/checkout@v2
-
       - name: Run tests
         run: |
           if [ -f docker-compose.test.yml ]; then
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . --file Dockerfile --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
+            NGINX_VERSION=${{ matrix.nginx }} docker build . --file Dockerfile --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
           fi
 
   push-github:
     needs: test
-
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-
+    strategy:
+      matrix:
+        nginx:
+          - 1.16.1
+          - 1.18.0
     steps:
       - uses: actions/checkout@v2
-
       - name: Build image
-        run: docker build . --file Dockerfile --tag image --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
-
+        run: NGINX_VERSION=${{ matrix.nginx }} docker build . --file Dockerfile --tag image --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-
       - name: Push image
         run: |
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}
-
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
-
           echo IMAGE_ID=${IMAGE_ID}
           echo VERSION=${VERSION}
-
           docker tag image ${IMAGE_ID}:${VERSION}
           docker tag image ${IMAGE_ID}:latest
           docker push ${IMAGE_ID}
 
   push-dockerhub:
     needs: test
-
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-
+    strategy:
+      matrix:
+        nginx:
+          - 1.16.1
+          - 1.18.0
     steps:
       - uses: actions/checkout@v2
-
       - name: Build image
-        run: docker build . --file Dockerfile --tag image --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
-
+        run: NGINX_VERSION=${{ matrix.nginx }} docker build . --file Dockerfile --tag image --build-arg IMAGE_BASE_NAME --build-arg IMAGE_BASE_VERSION --build-arg NGINX_VERSION
       - name: Log into registry
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login registry.hub.docker.com -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-
       - name: Push image Docker Hub
         run: |
           IMAGE_ID=registry.hub.docker.com/${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}
-
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
-
           echo IMAGE_ID=${IMAGE_ID}
           echo VERSION=${VERSION}
-
           docker tag image ${IMAGE_ID}:${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}-${VERSION}
           docker tag image ${IMAGE_ID}:latest
           docker push ${IMAGE_ID}
