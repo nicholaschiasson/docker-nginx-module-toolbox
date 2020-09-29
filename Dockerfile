@@ -33,6 +33,7 @@ RUN yum install -y \
 RUN cpanm --force Spiffy
 RUN cpanm Test::Base
 RUN cpanm Test::Nginx
+RUN cpanm JSON
 
 RUN unbound-control-setup
 COPY unbound.conf /etc/unbound.conf
