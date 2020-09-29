@@ -42,8 +42,8 @@ jobs:
           - 1.14.2
           - 1.16.1
         include:
-          latest: true
-          nginx: 1.18.0
+          - latest: true
+            nginx: 1.18.0
     steps:
       - uses: actions/checkout@v2
       - name: Build image
@@ -73,8 +73,8 @@ jobs:
           - 1.14.2
           - 1.16.1
         include:
-          latest: true
-          nginx: 1.18.0
+          - latest: true
+            nginx: 1.18.0
     steps:
       - uses: actions/checkout@v2
       - name: Build image
