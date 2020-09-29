@@ -48,7 +48,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image
         run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}-${{ matrix.nginx }}
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
           echo IMAGE_ID=${IMAGE_ID}
@@ -79,6 +79,6 @@ jobs:
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
           echo IMAGE_ID=${IMAGE_ID}
           echo VERSION=${VERSION}
-          docker tag image ${IMAGE_ID}:${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}-${VERSION}
+          docker tag image ${IMAGE_ID}:${IMAGE_BASE_NAME}-${IMAGE_BASE_VERSION}-${{ matrix.nginx }}-${VERSION}
           docker tag image ${IMAGE_ID}:latest
           docker push ${IMAGE_ID}
