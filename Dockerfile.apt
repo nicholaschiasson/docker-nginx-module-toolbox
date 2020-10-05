@@ -1,0 +1,49 @@
+ARG IMAGE_BASE
+
+FROM ${IMAGE_BASE}
+
+ARG NGINX_VERSION
+
+WORKDIR /tmp
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update -y
+
+RUN apt-get install -y dnsutils
+RUN apt-get install -y clang
+RUN apt-get install -y clang-format
+RUN apt-get install -y clang-tidy
+RUN apt-get install -y cpanminus
+RUN apt-get install -y curl
+RUN apt-get install -y gcc
+RUN apt-get install -y g++
+RUN apt-get install -y gdb
+RUN apt-get install -y gzip
+RUN apt-get install -y jq
+RUN apt-get install -y libexpat1-dev
+RUN apt-get install -y libpcre3-dev
+RUN apt-get install -y libssl-dev
+RUN apt-get install -y make
+RUN apt-get install -y patch
+RUN apt-get install -y perl
+RUN apt-get install -y tar
+RUN apt-get install -y unbound
+RUN apt-get install -y valgrind
+RUN apt-get install -y zlib1g-dev
+
+RUN cpanm --force Spiffy
+RUN cpanm Test::Base
+RUN cpanm Test::Nginx
+RUN cpanm JSON
+
+RUN unbound-control-setup
+COPY unbound.conf /etc/unbound.conf
+COPY unbound_local_zone.conf /etc/unbound_local_zone.conf
+
+RUN curl -L http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz
+WORKDIR /src/nginx
+RUN tar -xzvf /tmp/nginx.tar.gz --strip-components 1
+RUN ./configure
+
+WORKDIR /

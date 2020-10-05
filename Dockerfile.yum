@@ -1,0 +1,46 @@
+ARG IMAGE_BASE
+
+FROM ${IMAGE_BASE}
+
+ARG NGINX_VERSION
+
+WORKDIR /tmp
+
+RUN yum update -y
+
+RUN yum install -y bind-utils
+RUN yum install -y expat-devel
+RUN yum install -y clang
+RUN yum install -y clang-tools-extra
+RUN yum install -y curl
+RUN yum install -y gcc
+RUN yum install -y gcc-c++
+RUN yum install -y gdb
+RUN yum install -y gzip
+RUN yum install -y jq
+RUN yum install -y openssl-devel
+RUN yum install -y patch
+RUN yum install -y pcre-devel
+RUN yum install -y perl
+RUN yum install -y perl-App-cpanminus
+RUN yum install -y procps
+RUN yum install -y tar
+RUN yum install -y unbound
+RUN yum install -y valgrind
+RUN yum install -y which
+
+RUN cpanm --force Spiffy
+RUN cpanm Test::Base
+RUN cpanm Test::Nginx
+RUN cpanm JSON
+
+RUN unbound-control-setup
+COPY unbound.conf /etc/unbound.conf
+COPY unbound_local_zone.conf /etc/unbound_local_zone.conf
+
+RUN curl -L http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz
+WORKDIR /src/nginx
+RUN tar -xzvf /tmp/nginx.tar.gz --strip-components 1
+RUN ./configure
+
+WORKDIR /
