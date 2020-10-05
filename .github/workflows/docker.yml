@@ -29,7 +29,7 @@ jobs:
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . --file Dockerfile${IMAGE_BASE%%:*} --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
+            docker build . --file Dockerfile.${IMAGE_BASE%%:*} --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
           fi
 
   push-github:
@@ -52,7 +52,7 @@ jobs:
       - name: Build image
         run: |
           IMAGE_BASE=${{ matrix.imgbase }}
-          docker build . --file Dockerfile${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
+          docker build . --file Dockerfile.${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image
@@ -86,7 +86,7 @@ jobs:
       - name: Build image
         run: |
           IMAGE_BASE=${{ matrix.imgbase }}
-          docker build . --file Dockerfile${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
+          docker build . --file Dockerfile.${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
       - name: Log into registry
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login registry.hub.docker.com -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: Push image Docker Hub
