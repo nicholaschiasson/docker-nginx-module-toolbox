@@ -32,7 +32,7 @@ jobs:
             docker build . --file Dockerfile.${IMAGE_BASE%%:*} --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
           fi
 
-  push-github:
+  push:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -54,46 +54,23 @@ jobs:
         run: |
           IMAGE_BASE=${{ matrix.imgbase }}
           docker build . --file Dockerfile.${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-      - name: Push image
+      - name: Log into Docker Hub registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login registry.hub.docker.com -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Push image Docker Hub registry
         run: |
-          IMAGE_BASE=${{ matrix.imgbase }}
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/${IMAGE_BASE/:/-}-${{ matrix.nginx }}
+          IMAGE_ID=registry.hub.docker.com/${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
           echo IMAGE_ID=${IMAGE_ID}
           echo VERSION=${VERSION}
-          docker tag image ${IMAGE_ID}:${VERSION}
-          docker push ${IMAGE_ID}
-
-  push-dockerhub:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    strategy:
-      matrix:
-        imgbase:
-          - amazonlinux:2
-          - centos:8
-          - ubuntu:20.04
-        nginx:
-          - 1.10.3
-          - 1.12.2
-          - 1.14.2
-          - 1.16.1
-          - 1.18.0
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build image
-        run: |
           IMAGE_BASE=${{ matrix.imgbase }}
-          docker build . --file Dockerfile.${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
-      - name: Log into registry
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login registry.hub.docker.com -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      - name: Push image Docker Hub
+          docker tag image ${IMAGE_ID}:${IMAGE_BASE/:/-}-${{ matrix.nginx }}-${VERSION}
+          docker push ${IMAGE_ID}
+      - name: Log into GitHub registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - name: Push image GitHub registry
         run: |
-          IMAGE_ID=registry.hub.docker.com/${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
           echo IMAGE_ID=${IMAGE_ID}
