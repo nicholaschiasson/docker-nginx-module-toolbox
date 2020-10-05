@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run tests
         run: |
-					IMAGE_BASE=${{ matrix.imgbase }}
+          IMAGE_BASE=${{ matrix.imgbase }}
           if [ -f docker-compose.test.yml ]; then
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
@@ -51,8 +51,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build image
         run: |
-					IMAGE_BASE=${{ matrix.imgbase }}
-					docker build . --file Dockerfile${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
+          IMAGE_BASE=${{ matrix.imgbase }}
+          docker build . --file Dockerfile${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image
@@ -84,9 +84,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build image
-				run: |
-					IMAGE_BASE=${{ matrix.imgbase }}
-					docker build . --file Dockerfile${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
+        run: |
+          IMAGE_BASE=${{ matrix.imgbase }}
+          docker build . --file Dockerfile${IMAGE_BASE%%:*} --tag image --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
       - name: Log into registry
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login registry.hub.docker.com -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: Push image Docker Hub
