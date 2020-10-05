@@ -27,10 +27,15 @@ RUN apt-get install -y libssl-dev
 RUN apt-get install -y make
 RUN apt-get install -y patch
 RUN apt-get install -y perl
+RUN apt-get install -y procps
 RUN apt-get install -y tar
 RUN apt-get install -y unbound
 RUN apt-get install -y valgrind
 RUN apt-get install -y zlib1g-dev
+
+RUN apt-get clean
+RUN apt-get autoclean
+RUN apt-get autoremove
 
 RUN cpanm --force Spiffy
 RUN cpanm Test::Base

@@ -1,0 +1,53 @@
+ARG IMAGE_BASE
+
+FROM ${IMAGE_BASE}
+
+ARG NGINX_VERSION
+
+WORKDIR /tmp
+
+RUN apk update
+
+RUN apk add bash
+RUN apk add bind-tools
+RUN apk add expat-dev
+RUN apk add clang
+RUN apk add clang-extra-tools
+RUN apk add curl
+RUN apk add gcc
+RUN apk add g++
+RUN apk add gdb
+RUN apk add gzip
+RUN apk add jq
+RUN apk add make
+RUN apk add openssl
+RUN apk add openssl-dev
+RUN apk add patch
+RUN apk add pcre-dev
+RUN apk add perl
+RUN apk add perl-app-cpanminus
+RUN apk add perl-libwww
+RUN apk add perl-list-moreutils
+RUN apk add procps
+RUN apk add tar
+RUN apk add unbound
+RUN apk add valgrind
+RUN apk add wget
+RUN apk add which
+RUN apk add zlib-dev
+
+RUN cpanm --force Spiffy
+RUN cpanm Test::Base
+RUN cpanm Test::Nginx
+RUN cpanm JSON
+
+RUN unbound-control-setup
+COPY unbound.conf /etc/unbound.conf
+COPY unbound_local_zone.conf /etc/unbound_local_zone.conf
+
+RUN curl -L http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz
+WORKDIR /src/nginx
+RUN tar -xzvf /tmp/nginx.tar.gz --strip-components 1
+RUN ./configure
+
+WORKDIR /
