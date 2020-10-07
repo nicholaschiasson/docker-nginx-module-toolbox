@@ -14,6 +14,7 @@ RUN apk add expat-dev
 RUN apk add clang
 RUN apk add clang-extra-tools
 RUN apk add curl
+RUN apk add diffutils
 RUN apk add gcc
 RUN apk add g++
 RUN apk add gdb

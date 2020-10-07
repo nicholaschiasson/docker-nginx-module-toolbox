@@ -13,6 +13,7 @@ RUN yum install -y expat-devel
 RUN yum install -y clang
 RUN yum install -y clang-tools-extra
 RUN yum install -y curl
+RUN yum install -y diffutils
 RUN yum install -y gcc
 RUN yum install -y gcc-c++
 RUN yum install -y gdb
