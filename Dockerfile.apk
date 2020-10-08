@@ -44,8 +44,8 @@ RUN cpanm JSON
 
 RUN touch /run/unbound.control.sock
 RUN unbound-control-setup
-COPY unbound.conf /etc/unbound.conf
-COPY unbound_local_zone.conf /etc/unbound_local_zone.conf
+COPY unbound.conf /etc/unbound/unbound.conf
+COPY unbound_local_zone.conf /etc/unbound/unbound_local_zone.conf
 
 RUN curl -L http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz
 WORKDIR /src/nginx
