@@ -38,6 +38,7 @@ RUN cpanm Test::Base
 RUN cpanm Test::Nginx
 RUN cpanm JSON
 
+RUN touch /run/unbound.control.sock
 RUN unbound-control-setup
 COPY unbound.conf /etc/unbound.conf
 COPY unbound_local_zone.conf /etc/unbound_local_zone.conf
