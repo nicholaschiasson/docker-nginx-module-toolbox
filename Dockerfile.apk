@@ -29,6 +29,7 @@ RUN apk add perl
 RUN apk add perl-app-cpanminus
 RUN apk add perl-libwww
 RUN apk add perl-list-moreutils
+RUN apk add perl-utils
 RUN apk add procps
 RUN apk add tar
 RUN apk add unbound
