@@ -47,5 +47,13 @@ RUN curl -L http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar
 WORKDIR /src/nginx
 RUN tar -xzvf /tmp/nginx.tar.gz --strip-components 1
 RUN ./configure
+WORKDIR /tmp
+
+RUN curl -L https://github.com/openresty/no-pool-nginx/archive/master.tar.gz -o no-pool-nginx.tar.gz
+WORKDIR /src/patches/no-pool-nginx
+RUN tar -xzvf /tmp/no-pool-nginx.tar.gz --strip-components 1
+WORKDIR /tmp
+
+RUN rm -rf ./*
 
 WORKDIR /
