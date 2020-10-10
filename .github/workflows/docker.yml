@@ -10,29 +10,6 @@ env:
   IMAGE_NAME: nginx-module-toolbox
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        imgbase:
-          - alpine:3
-          - amazonlinux:2
-          - centos:8
-          - ubuntu:20.04
-        nginx:
-          - 1.18.0
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run tests
-        run: |
-          IMAGE_BASE=${{ matrix.imgbase }}
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile.${IMAGE_BASE%%:*} --build-arg IMAGE_BASE=${{ matrix.imgbase }} --build-arg NGINX_VERSION=${{ matrix.nginx }}
-          fi
-
   push:
     needs: test
     runs-on: ubuntu-latest
