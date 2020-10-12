@@ -8,35 +8,49 @@ WORKDIR /tmp
 
 RUN apk update
 
-RUN apk add bash
-RUN apk add bind-tools
-RUN apk add expat-dev
-RUN apk add clang
-RUN apk add clang-extra-tools
-RUN apk add curl
-RUN apk add diffutils
-RUN apk add gcc
-RUN apk add g++
-RUN apk add gdb
-RUN apk add gzip
-RUN apk add jq
-RUN apk add make
-RUN apk add openssl
-RUN apk add openssl-dev
-RUN apk add patch
-RUN apk add pcre-dev
-RUN apk add perl
-RUN apk add perl-app-cpanminus
-RUN apk add perl-libwww
-RUN apk add perl-list-moreutils
-RUN apk add perl-utils
-RUN apk add procps
-RUN apk add tar
-RUN apk add unbound
-RUN apk add valgrind
-RUN apk add wget
-RUN apk add which
-RUN apk add zlib-dev
+RUN apk add --update --no-cache apache2-utils
+RUN apk add --update --no-cache autoconf
+RUN apk add --update --no-cache automake
+RUN apk add --update --no-cache bash
+RUN apk add --update --no-cache bind-tools
+RUN apk add --update --no-cache expat-dev
+RUN apk add --update --no-cache clang
+RUN apk add --update --no-cache clang-extra-tools
+RUN apk add --update --no-cache curl
+RUN apk add --update --no-cache diffutils
+RUN apk add --update --no-cache expect
+RUN apk add --update --no-cache gcc
+RUN apk add --update --no-cache g++
+RUN apk add --update --no-cache gdb
+RUN apk add --update --no-cache gzip
+RUN apk add --update --no-cache jq
+RUN apk add --update --no-cache libev-dev
+RUN apk add --update --no-cache make
+RUN apk add --update --no-cache openssl
+RUN apk add --update --no-cache openssl-dev
+RUN apk add --update --no-cache patch
+RUN apk add --update --no-cache pcre-dev
+RUN apk add --update --no-cache perl
+RUN apk add --update --no-cache perl-app-cpanminus
+RUN apk add --update --no-cache perl-libwww
+RUN apk add --update --no-cache perl-list-moreutils
+RUN apk add --update --no-cache perl-utils
+RUN apk add --update --no-cache procps
+RUN apk add --update --no-cache python2
+RUN apk add --update --no-cache tar
+RUN apk add --update --no-cache unbound
+RUN apk add --update --no-cache valgrind
+RUN apk add --update --no-cache wget
+RUN apk add --update --no-cache which
+RUN apk add --update --no-cache zlib-dev
+
+RUN curl -L https://github.com/lighttpd/weighttp/archive/weighttp-0.4.tar.gz -o weighttp.tar.gz
+WORKDIR /tmp/weighttp
+RUN tar -xzvf /tmp/weighttp.tar.gz --strip-components 1
+RUN ./waf configure
+RUN ./waf build
+RUN ./waf install
+WORKDIR /tmp
 
 RUN cpanm --force Spiffy
 RUN cpanm Test::Base

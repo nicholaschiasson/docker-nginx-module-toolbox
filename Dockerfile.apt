@@ -10,18 +10,23 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y
 
-RUN apt-get install -y dnsutils
+RUN apt-get install -y apache2-utils
+RUN apt-get install -y autoconf
+RUN apt-get install -y automake
 RUN apt-get install -y clang
 RUN apt-get install -y clang-format
 RUN apt-get install -y clang-tidy
 RUN apt-get install -y cpanminus
 RUN apt-get install -y curl
 RUN apt-get install -y diffutils
+RUN apt-get install -y dnsutils
+RUN apt-get install -y expect
 RUN apt-get install -y gcc
 RUN apt-get install -y g++
 RUN apt-get install -y gdb
 RUN apt-get install -y gzip
 RUN apt-get install -y jq
+RUN apt-get install -y libev-dev
 RUN apt-get install -y libexpat1-dev
 RUN apt-get install -y libpcre3-dev
 RUN apt-get install -y libssl-dev
@@ -29,6 +34,7 @@ RUN apt-get install -y make
 RUN apt-get install -y patch
 RUN apt-get install -y perl
 RUN apt-get install -y procps
+RUN apt-get install -y python2
 RUN apt-get install -y tar
 RUN apt-get install -y unbound
 RUN apt-get install -y valgrind
@@ -37,6 +43,15 @@ RUN apt-get install -y zlib1g-dev
 RUN apt-get clean
 RUN apt-get autoclean
 RUN apt-get autoremove
+
+RUN ln -sf $(which python2) $(dirname $(which python2))/python
+RUN curl -L https://github.com/lighttpd/weighttp/archive/weighttp-0.4.tar.gz -o weighttp.tar.gz
+WORKDIR /tmp/weighttp
+RUN tar -xzvf /tmp/weighttp.tar.gz --strip-components 1
+RUN ./waf configure
+RUN ./waf build
+RUN ./waf install
+WORKDIR /tmp
 
 RUN cpanm --force Spiffy
 RUN cpanm Test::Base
