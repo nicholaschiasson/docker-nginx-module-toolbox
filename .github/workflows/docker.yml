@@ -18,7 +18,6 @@ jobs:
         imgbase:
           - alpine:3
           - amazonlinux:2
-          - centos:8
           - ubuntu:20.04
         nginx:
           - 1.10.3
