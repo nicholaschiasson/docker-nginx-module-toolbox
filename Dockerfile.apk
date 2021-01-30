@@ -6,73 +6,85 @@ ARG NGINX_VERSION
 
 WORKDIR /tmp
 
-RUN apk update
+RUN \
+# packages
+	apk update \
+	&& apk add --update --no-cache apache2-utils \
+		autoconf \
+		automake \
+		bash \
+		bind-tools \
+		expat-dev \
+		clang \
+		clang-extra-tools \
+		curl \
+		diffutils \
+		expect \
+		gcc \
+		g++ \
+		gd \
+		gdb \
+		geoip-dev \
+		git \
+		gzip \
+		jq \
+		libev-dev \
+		libxml2-dev \
+		libxslt-dev \
+		make \
+		mandoc \
+		openssl \
+		openssl-dev \
+		patch \
+		pcre-dev \
+		perl \
+		perl-app-cpanminus \
+		perl-libwww \
+		perl-list-moreutils \
+		perl-utils \
+		procps \
+		python2 \
+		tar \
+		unbound \
+		valgrind \
+		wget \
+		which \
+		zlib-dev \
+# weighttp
+	&& curl -L https://github.com/lighttpd/weighttp/archive/weighttp-0.4.tar.gz -o weighttp.tar.gz \
+	&& mkdir -p /tmp/weighttp \
+	&& cd /tmp/weighttp \
+	&& tar -xzvf /tmp/weighttp.tar.gz --strip-components 1 \
+	&& ./waf configure \
+	&& ./waf build \
+	&& ./waf install \
+	&& cd /tmp \
+# perl modules
+	&& cpanm --force \
+		Spiffy \
+		Test::Base \
+		Test::Nginx \
+		JSON \
+# unbound
+	&& touch /run/unbound.control.sock \
+	&& unbound-control-setup \
+# nginx
+	&& curl -L http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz \
+	&& mkdir -p /src/nginx \
+	&& cd /src/nginx \
+	&& tar -xzvf /tmp/nginx.tar.gz --strip-components 1 \
+	&& ./configure \
+	&& cd /tmp \
+# nginx no pool patches
+	&& curl -L https://github.com/openresty/no-pool-nginx/archive/master.tar.gz -o no-pool-nginx.tar.gz \
+	&& mkdir -p /src/patches/no-pool-nginx \
+	&& cd /src/patches/no-pool-nginx \
+	&& tar -xzvf /tmp/no-pool-nginx.tar.gz --strip-components 1 \
+	&& cd /tmp \
+# cleanup
+	&& rm -rf ./*
 
-RUN apk add --update --no-cache apache2-utils
-RUN apk add --update --no-cache autoconf
-RUN apk add --update --no-cache automake
-RUN apk add --update --no-cache bash
-RUN apk add --update --no-cache bind-tools
-RUN apk add --update --no-cache expat-dev
-RUN apk add --update --no-cache clang
-RUN apk add --update --no-cache clang-extra-tools
-RUN apk add --update --no-cache curl
-RUN apk add --update --no-cache diffutils
-RUN apk add --update --no-cache expect
-RUN apk add --update --no-cache gcc
-RUN apk add --update --no-cache g++
-RUN apk add --update --no-cache gdb
-RUN apk add --update --no-cache gzip
-RUN apk add --update --no-cache jq
-RUN apk add --update --no-cache libev-dev
-RUN apk add --update --no-cache make
-RUN apk add --update --no-cache openssl
-RUN apk add --update --no-cache openssl-dev
-RUN apk add --update --no-cache patch
-RUN apk add --update --no-cache pcre-dev
-RUN apk add --update --no-cache perl
-RUN apk add --update --no-cache perl-app-cpanminus
-RUN apk add --update --no-cache perl-libwww
-RUN apk add --update --no-cache perl-list-moreutils
-RUN apk add --update --no-cache perl-utils
-RUN apk add --update --no-cache procps
-RUN apk add --update --no-cache python2
-RUN apk add --update --no-cache tar
-RUN apk add --update --no-cache unbound
-RUN apk add --update --no-cache valgrind
-RUN apk add --update --no-cache wget
-RUN apk add --update --no-cache which
-RUN apk add --update --no-cache zlib-dev
-
-RUN curl -L https://github.com/lighttpd/weighttp/archive/weighttp-0.4.tar.gz -o weighttp.tar.gz
-WORKDIR /tmp/weighttp
-RUN tar -xzvf /tmp/weighttp.tar.gz --strip-components 1
-RUN ./waf configure
-RUN ./waf build
-RUN ./waf install
-WORKDIR /tmp
-
-RUN cpanm --force Spiffy
-RUN cpanm Test::Base
-RUN cpanm Test::Nginx
-RUN cpanm JSON
-
-RUN touch /run/unbound.control.sock
-RUN unbound-control-setup
 COPY unbound.conf /etc/unbound/unbound.conf
 COPY unbound_local_zone.conf /etc/unbound/unbound_local_zone.conf
-
-RUN curl -L http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx.tar.gz
-WORKDIR /src/nginx
-RUN tar -xzvf /tmp/nginx.tar.gz --strip-components 1
-RUN ./configure
-WORKDIR /tmp
-
-RUN curl -L https://github.com/openresty/no-pool-nginx/archive/master.tar.gz -o no-pool-nginx.tar.gz
-WORKDIR /src/patches/no-pool-nginx
-RUN tar -xzvf /tmp/no-pool-nginx.tar.gz --strip-components 1
-WORKDIR /tmp
-
-RUN rm -rf ./*
 
 WORKDIR /
