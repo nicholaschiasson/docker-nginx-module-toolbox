@@ -18,7 +18,7 @@ RUN \
 		automake \
 		clang \
 		clang-format \
-		clang-tidy=7.0.1-1 \
+		clang-tidy \
 		cpanminus \
 		curl \
 		diffutils \
