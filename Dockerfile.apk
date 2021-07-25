@@ -16,7 +16,7 @@ RUN \
 		bind-tools \
 		expat-dev \
 		clang \
-		clang-extra-tools \
+		clang-extra-tools=7.0.1-1 \
 		curl \
 		diffutils \
 		expect \
