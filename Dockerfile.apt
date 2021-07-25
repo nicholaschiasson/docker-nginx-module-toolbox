@@ -46,7 +46,7 @@ RUN \
 		procps \
 		python2 \
 		tar \
-		unbound \
+		unbound=1.6 \
 		valgrind \
 		zlib1g-dev \
 	&& apt-get clean \
