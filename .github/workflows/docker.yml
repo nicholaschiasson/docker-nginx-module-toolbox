@@ -42,8 +42,9 @@ jobs:
           echo IMAGE_ID=${IMAGE_ID}
           echo VERSION=${VERSION}
           IMAGE_BASE=${{ matrix.imgbase }}
-          docker tag image ${IMAGE_ID}:${IMAGE_BASE/:/-}-${{ matrix.nginx }}-${VERSION}
-          docker push ${IMAGE_ID}
+          IMAGE_FULL_NAME=${IMAGE_ID}:${IMAGE_BASE/:/-}-${{ matrix.nginx }}-${VERSION}
+          docker tag image ${IMAGE_FULL_NAME}
+          docker push ${IMAGE_FULL_NAME}
       - name: Log into GitHub registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image GitHub registry
@@ -54,5 +55,6 @@ jobs:
           echo IMAGE_ID=${IMAGE_ID}
           echo VERSION=${VERSION}
           IMAGE_BASE=${{ matrix.imgbase }}
-          docker tag image ${IMAGE_ID}:${IMAGE_BASE/:/-}-${{ matrix.nginx }}-${VERSION}
-          docker push ${IMAGE_ID}
+          IMAGE_FULL_NAME=${IMAGE_ID}:${IMAGE_BASE/:/-}-${{ matrix.nginx }}-${VERSION}
+          docker tag image ${IMAGE_FULL_NAME}
+          docker push ${IMAGE_FULL_NAME}
