@@ -14,7 +14,7 @@ RUN \
 		automake \
 		bind-utils \
 		clang \
-		clang-tools-extra \
+		clang-tools-extra-7.0.1-1 \
 		curl \
 		diffutils \
 		expat-devel \
