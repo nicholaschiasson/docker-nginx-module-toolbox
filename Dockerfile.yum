@@ -42,7 +42,7 @@ RUN \
 		procps \
 		python2 \
 		tar \
-		unbound-1.6 \
+		unbound \
 		valgrind \
 		which \
 	&& yum clean all \
