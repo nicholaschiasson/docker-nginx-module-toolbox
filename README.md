@@ -9,9 +9,6 @@ docker build . --file Dockerfile.alpine --build-arg IMAGE_BASE=alpine:3 --build-
 # amazonlinux:2
 docker build . --file Dockerfile.amazonlinux --build-arg IMAGE_BASE=amazonlinux:2 --build-arg NGINX_VERSION=1.16.1
 
-# centos:8
-docker build . --file Dockerfile.centos --build-arg IMAGE_BASE=centos:8 --build-arg NGINX_VERSION=1.16.1
-
 # ubuntu:20.04
 docker build . --file Dockerfile.ubuntu --build-arg IMAGE_BASE=ubuntu:20.04 --build-arg NGINX_VERSION=1.16.1
 ```

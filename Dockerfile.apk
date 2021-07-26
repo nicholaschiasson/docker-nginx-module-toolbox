@@ -9,7 +9,8 @@ WORKDIR /tmp
 RUN \
 # packages
 	apk update \
-	&& apk add --update --no-cache apache2-utils \
+	&& apk add --update --no-cache \
+		apache2-utils \
 		autoconf \
 		automake \
 		bash \
