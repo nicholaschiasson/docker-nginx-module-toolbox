@@ -10,45 +10,38 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN \
 # packages
-	apt-get update -y \
-	&& apt-get install -y \
-		apache2-utils \
-		apt-utils \
-		autoconf \
-		automake \
-		clang \
-		clang-format \
-		clang-tidy \
-		cpanminus \
-		curl \
-		diffutils \
-		dnsutils \
-		expect \
-		gcc \
-		g++ \
-		gdb \
-		git \
-		gzip \
-		jq \
-		libev-dev \
-		libexpat1-dev \
-		libgd-dev \
-		libgeoip-dev \
-		libgoogle-perftools-dev \
-		libpcre3-dev \
-		libssl-dev \
-		libxml2-dev \
-		libxslt-dev \
-		make \
-		man-db \
-		patch \
-		perl \
-		procps \
-		python2 \
-		tar \
-		unbound \
-		valgrind \
-		zlib1g-dev \
+	apt update -y \
+	&& apt install -y \
+		apache2-utils=2.4.41\* \
+		autoconf=2.69\* \
+		automake=1:1.16.1\* \
+		clang=1:10.0\* \
+		clang-format=1:10.0\* \
+		clang-tidy=1:10.0\* \
+		cpanminus=1.7044\* \
+		curl=7.68.0\* \
+		diffutils=1:3.7\* \
+		dnsutils=1:9.16.1\* \
+		expect=5.45.4\* \
+		g++=4:9.3.0\* \
+		gcc=4:9.3.0\* \
+		gdb=9.2\* \
+		git=1:2.25.1\* \
+		gzip=1.10\* \
+		jq=1.6\* \
+		libev-dev=1:4.31\* \
+		libexpat1-dev=2.2.9\* \
+		libpcre3-dev=2:8.39\* \
+		libssl-dev=1.1.1f\* \
+		make=4.2.1\* \
+		patch=2.7.6\* \
+		perl=5.30.0\* \
+		procps=2:3.3.16\* \
+		python2=2.7.17\* \
+		tar=1.30+dfsg\* \
+		unbound=1.9.4\* \
+		valgrind=1:3.15.0\* \
+		zlib1g-dev=1:1.2.11.dfsg\* \
 	&& apt-get clean \
 	&& apt-get autoclean \
 	&& apt-get autoremove \
@@ -64,10 +57,10 @@ RUN \
 	&& cd /tmp \
 # perl modules
 	&& cpanm --force \
-		Spiffy \
-		Test::Base \
-		Test::Nginx \
-		JSON \
+		INGY/Spiffy-0.46.tar.gz \
+		INGY/Test-Base-0.89.tar.gz \
+		AGENT/Test-Nginx-0.29.tar.gz \
+		ISHIGAKI/JSON-4.06.tar.gz \
 # unbound
 	&& touch /run/unbound.control.sock \
 	&& unbound-control-setup \
